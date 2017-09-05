@@ -1,0 +1,10 @@
+com\lankydan\Application.class
+com\lankydan\rest\PersonDto.class
+com\lankydan\repository\PersonRepository.class
+com\lankydan\rest\PersonControllerAdvice.class
+com\lankydan\rest\PersonResource.class
+com\lankydan\document\Person$1.class
+com\lankydan\document\Person.class
+com\lankydan\repository\exception\PersonNotFoundException.class
+com\lankydan\document\Person$PersonBuilder.class
+com\lankydan\rest\PersonController.class
