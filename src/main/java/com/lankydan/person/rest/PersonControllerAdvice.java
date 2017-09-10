@@ -12,11 +12,11 @@ import java.util.Optional;
 
 /*
 See its own comments. It works based on packages / annotations
-(hence why example I used was annotations = RestController.class).
+(such as = RestController.class representing @RestController).
 So any method that is marked with @ExceptionHandler / @ModelAttribute / @InitBinder
 will use the exception handlers created in this class.
  */
-@ControllerAdvice("com.lankydan.rest")
+@ControllerAdvice("com.lankydan")
 public class PersonControllerAdvice {
 
   // below is suggested by spring REST guide
@@ -33,7 +33,7 @@ public class PersonControllerAdvice {
 
   @ExceptionHandler(PersonNotFoundException.class)
   public ResponseEntity<VndErrors> notFoundException(PersonNotFoundException e) {
-    return error(e, HttpStatus.NOT_FOUND, e.getId());
+    return error(e, HttpStatus.NOT_FOUND, e.getId().toString());
   }
 
   private <E extends Exception> ResponseEntity<VndErrors> error(

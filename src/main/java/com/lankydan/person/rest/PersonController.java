@@ -18,15 +18,6 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/people", produces = "application/hal+json")
 public class PersonController {
 
-  /*
-  Need to research into HATEOAS (Hypermedia as the engine of application state)
-  which is the reason for writing the REST API as such
-
-  Need to know why it should be done
-  Returning a resource rather than the entity/entity/object/dto which raps the object
-  Resource has URI's in it? For information about the REST API method that is being used?
-   */
-
   final PersonRepository personRepository;
 
   public PersonController(final PersonRepository personRepository) {
@@ -44,24 +35,16 @@ public class PersonController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<PersonResource> get(@PathVariable final String id) {
+  public ResponseEntity<Person> get(@PathVariable final long id) {
     return personRepository
-        .findById(id)
-        .map(p -> ResponseEntity.ok(new PersonResource(p)))
-        .orElseThrow(() -> new PersonNotFoundException(id));
+            .findById(id)
+            .map(p -> ResponseEntity.ok(p))
+            .orElseThrow(() -> new PersonNotFoundException(id));
   }
 
   @PostMapping
-  public ResponseEntity<?> post(@RequestBody final PersonDto personDto) {
-    // add a dto later on for passing in
-    final Person person =
-        Person.builder()
-            .firstName(personDto.getFirstName())
-            .secondName(personDto.getSecondName())
-            .dateOfBirth(personDto.getDateOfBirth())
-            .profession(personDto.getProfession())
-            .salary(personDto.getSalary())
-            .build();
+  public ResponseEntity<PersonResource> post(@RequestBody final Person personFromRequest) {
+    final Person person = new Person(personFromRequest);
     personRepository.save(person);
     final URI uri =
         MvcUriComponentsBuilder.fromController(getClass())
@@ -73,27 +56,16 @@ public class PersonController {
 
   @PutMapping("/{id}")
   public ResponseEntity<PersonResource> put(
-      @PathVariable("id") final String id, @RequestBody PersonDto personDto) {
-    // id would be used to create a new entity with the id
-    // so when it is saved it will update the existing record
-    final Person person =
-        Person.builder()
-            .id(id)
-            .firstName(personDto.getFirstName())
-            .secondName(personDto.getSecondName())
-            .dateOfBirth(personDto.getDateOfBirth())
-            .profession(personDto.getProfession())
-            .salary(personDto.getSalary())
-            .build();
+      @PathVariable("id") final long id, @RequestBody Person personFromRequest) {
+    final Person person = new Person(personFromRequest, id);
     personRepository.save(person);
     final PersonResource resource = new PersonResource(person);
-    // uri returned is the uri to the updated resource (like in rails you update a user it then displays the user info on the next page)
-    final URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().toUriString());
+    final URI uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
     return ResponseEntity.created(uri).body(resource);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> delete(@PathVariable("id") final String id) {
+  public ResponseEntity<?> delete(@PathVariable("id") final long id) {
     return personRepository
         .findById(id)
         .map(

@@ -1,45 +1,61 @@
 package com.lankydan.person.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.lankydan.membership.entity.GymMembership;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
-@ToString(exclude = {"id", "dateOfBirth"})
 @Entity
-@Builder
-@AllArgsConstructor
+@Table(name = "people")
+@NoArgsConstructor
 public class Person {
 
   @Id
-  private String id;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
+
   private String firstName;
+
   private String secondName;
-  @JsonFormat(pattern = "dd/MM/yyyy")
+
+  @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
   @DateTimeFormat(pattern = "dd/MM/yyyy")
   private LocalDateTime dateOfBirth;
-  private String profession;
-  private int salary;
-  private List<Hobby> hobbies;
 
-//  public Person(
-//      final String firstName,
-//      final String secondName,
-//      final LocalDateTime dateOfBirth,
-//      final String profession,
-//      final int salary) {
-//    this.firstName = firstName;
-//    this.secondName = secondName;
-//    this.dateOfBirth = dateOfBirth;
-//    this.profession = profession;
-//    this.salary = salary;
-//  }
+  private String profession;
+
+  private int salary;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+  private List<GymMembership> memberships;
+
+  public Person(final Person person) {
+    this.firstName = person.getFirstName();
+    this.secondName = person.getSecondName();
+    this.dateOfBirth = person.getDateOfBirth();
+    this.profession = person.getProfession();
+    this.salary = person.getSalary();
+    this.memberships = person.getMemberships();
+  }
+
+  public Person(final Person person, final long id) {
+    this.id = id;
+    this.firstName = person.getFirstName();
+    this.secondName = person.getSecondName();
+    this.dateOfBirth = person.getDateOfBirth();
+    this.profession = person.getProfession();
+    this.salary = person.getSalary();
+    this.memberships = person.getMemberships();
+  }
 
 }
