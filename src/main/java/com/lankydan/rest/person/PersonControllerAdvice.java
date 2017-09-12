@@ -19,11 +19,6 @@ public class PersonControllerAdvice extends ResponseEntityExceptionHandler {
     return error(e, HttpStatus.NOT_FOUND, e.getId().toString());
   }
 
-  @ExceptionHandler(PersonNotFoundException.class)
-  public ResponseEntity<VndErrors> notFoundException2(final PersonNotFoundException e) {
-    return error(e, HttpStatus.NOT_FOUND, e.getId().toString());
-  }
-
   private ResponseEntity<VndErrors> error(
       final Exception exception, final HttpStatus httpStatus, final String logRef) {
     final String message =
