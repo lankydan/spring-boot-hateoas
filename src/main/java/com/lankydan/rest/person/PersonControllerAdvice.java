@@ -10,7 +10,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.Optional;
 
-@ControllerAdvice
+@ControllerAdvice(value = "com.lankydan.entity")
 @RequestMapping(produces = "application/vnd.error+json")
 public class PersonControllerAdvice extends ResponseEntityExceptionHandler {
 

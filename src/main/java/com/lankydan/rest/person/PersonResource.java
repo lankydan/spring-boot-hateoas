@@ -17,7 +17,6 @@ public class PersonResource extends ResourceSupport {
   public PersonResource(final Person person) {
     this.person = person;
     final long id = person.getId();
-    add(new Link(String.valueOf(id), "person-id"));
     add(linkTo(PersonController.class).withRel("people"));
     add(linkTo(methodOn(GymMembershipController.class).all(id)).withRel("memberships"));
     add(linkTo(methodOn(PersonController.class).get(id)).withSelfRel());
