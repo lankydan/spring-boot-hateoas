@@ -35,10 +35,10 @@ public class PersonController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Person> get(@PathVariable final long id) {
+  public ResponseEntity<PersonResource> get(@PathVariable final long id) {
     return personRepository
             .findById(id)
-            .map(p -> ResponseEntity.ok(p))
+            .map(p -> ResponseEntity.ok(new PersonResource(p)))
             .orElseThrow(() -> new PersonNotFoundException(id));
   }
 
