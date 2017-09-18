@@ -37,15 +37,14 @@ public class PersonController {
   @GetMapping("/{id}")
   public ResponseEntity<PersonResource> get(@PathVariable final long id) {
     return personRepository
-            .findById(id)
-            .map(p -> ResponseEntity.ok(new PersonResource(p)))
-            .orElseThrow(() -> new PersonNotFoundException(id));
+        .findById(id)
+        .map(p -> ResponseEntity.ok(new PersonResource(p)))
+        .orElseThrow(() -> new PersonNotFoundException(id));
   }
 
   @PostMapping
   public ResponseEntity<PersonResource> post(@RequestBody final Person personFromRequest) {
-    final Person person = new Person(personFromRequest);
-    personRepository.save(person);
+    final Person person = personRepository.save(new Person(personFromRequest));
     final URI uri =
         MvcUriComponentsBuilder.fromController(getClass())
             .path("/{id}")
